@@ -13,6 +13,7 @@ import pyperclip
 import sys
 
 from pyprelude.file_system import make_path
+from pysimplevcs.git_util import git_clone
 
 def _set_clipboard_text(s):
     pyperclip.copy(s)
@@ -79,7 +80,17 @@ def _show_metadata(path, metadata, defaults, indent=0):
         for key, value in defaults.iteritems():
             print("{}  {}={}".format(prefix, key, value))
 
+def _ensure_template_dir(config_dir):
+    template_repo_dir = make_path(config_dir, "sniptool-snippets")
+    if not os.path.isdir(template_repo_dir):
+        git_clone("https://github.com/rcook/sniptool-snippets.git", template_repo_dir)
+
+    template_dir = make_path(template_repo_dir, "_snippets")
+    return template_dir
+
 def _do_gen(args):
+    template_dir = _ensure_template_dir(args.config_dir)
+
     filters = jinja2.filters.FILTERS.copy()
     filters.update({
         "encode_cpp_literal" : lambda s: "\"" + s.replace("\\", "\\\\") + "\"", # TODO: Implement full set of C++ literal encoding rules
@@ -87,7 +98,7 @@ def _do_gen(args):
     })
     env = jinja2.Environment(undefined=jinja2.StrictUndefined)
     env.filters = filters
-    path = make_path(args.template_dir, args.template_name)
+    path = make_path(template_dir, args.template_name)
     source = _read_source(path)
     metadata, defaults = _read_metadata(source)
 
@@ -102,9 +113,11 @@ def _do_gen(args):
     print("Text sent to clipboard")
 
 def _do_list(args):
-    for p in os.listdir(args.template_dir):
+    template_dir = _ensure_template_dir(args.config_dir)
+
+    for p in os.listdir(template_dir):
         print("Template: {}".format(p))
-        path = make_path(args.template_dir, p)
+        path = make_path(template_dir, p)
         source = _read_source(path)
         metadata, defaults = _read_metadata(source)
         _show_metadata(path, metadata, defaults, 1)
@@ -114,12 +127,14 @@ def _main(argv=None):
     if argv is None:
         argv = sys.argv[1:]
 
+    default_config_dir = make_path(os.path.expanduser("~/.sniptool"))
+
     parser = argparse.ArgumentParser(prog="sniptool")
     parser.add_argument(
-        "--template-dir",
-        "-t",
-        default=make_path(__name__, "..", "_snippets"),
-        help="Template directory")
+        "--config-dir",
+        "-c",
+        default=default_config_dir,
+        help="Configuration directory")
     subparsers = parser.add_subparsers(help="subcommand help")
 
     gen_parser = subparsers.add_parser("gen", help="Generate code snippet")

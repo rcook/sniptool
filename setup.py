@@ -25,7 +25,8 @@ setup(
         "inflection",
         "Jinja2",
         "pyperclip",
-        "pyprelude"
+        "pyprelude",
+        "pysimplevcs"
     ],
     entry_points={
         "console_scripts": [
