@@ -7,7 +7,7 @@ from setuptools import setup
 
 setup(
     name="sniptool",
-    version="0.1",
+    version="0.2",
     description="Code snippet management tool",
     setup_requires=["setuptools-markdown"],
     long_description_markdown_filename="README.md",
