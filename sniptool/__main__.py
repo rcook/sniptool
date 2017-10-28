@@ -13,9 +13,9 @@ import pyperclip
 import sys
 
 from pyprelude.file_system import make_path
-from pysimplevcs.git_util import git_clone
 
 from sniptool import __description__, __project_name__, __version__
+from sniptool.config import Config
 
 def _set_clipboard_text(s):
     pyperclip.copy(s)
@@ -82,20 +82,10 @@ def _show_metadata(path, metadata, defaults, indent=0):
         for key, value in defaults.iteritems():
             print("{}  {}={}".format(prefix, key, value))
 
-def _ensure_template_dir(config_dir):
-    template_repo_dir = make_path(config_dir, "sniptool-snippets")
-    if not os.path.isdir(template_repo_dir):
-        git_clone("https://github.com/rcook/sniptool-snippets.git", template_repo_dir)
-
-    template_dir = make_path(template_repo_dir, "_snippets")
-    return template_dir
-
-def _do_version(args):
+def _do_version(config, args):
     print("{} version {}".format(__project_name__, __version__))
 
-def _do_gen(args):
-    template_dir = _ensure_template_dir(args.config_dir)
-
+def _do_gen(config, args):
     filters = jinja2.filters.FILTERS.copy()
     filters.update({
         "encode_cpp_literal" : lambda s: "\"" + s.replace("\\", "\\\\") + "\"", # TODO: Implement full set of C++ literal encoding rules
@@ -103,7 +93,7 @@ def _do_gen(args):
     })
     env = jinja2.Environment(undefined=jinja2.StrictUndefined)
     env.filters = filters
-    path = make_path(template_dir, args.template_name)
+    path = make_path(config.template_dir, args.template_name)
     source = _read_source(path)
     metadata, defaults = _read_metadata(source)
 
@@ -117,12 +107,10 @@ def _do_gen(args):
     _set_clipboard_text(output)
     print("Text sent to clipboard")
 
-def _do_list(args):
-    template_dir = _ensure_template_dir(args.config_dir)
-
-    for p in os.listdir(template_dir):
+def _do_list(config, args):
+    for p in os.listdir(config.template_dir):
         print("Template: {}".format(p))
-        path = make_path(template_dir, p)
+        path = make_path(config.template_dir, p)
         source = _read_source(path)
         metadata, defaults = _read_metadata(source)
         _show_metadata(path, metadata, defaults, 1)
@@ -132,14 +120,10 @@ def _main(argv=None):
     if argv is None:
         argv = sys.argv[1:]
 
-    default_config_dir = make_path(os.path.expanduser("~/.sniptool"))
+    config_dir = make_path(os.path.expanduser(os.environ.get("SNIPTOOL_DIR", "~/.sniptool")))
+    config = Config(config_dir)
 
     parser = argparse.ArgumentParser(prog=__project_name__, description=__description__)
-    parser.add_argument(
-        "--config-dir",
-        "-c",
-        default=default_config_dir,
-        help="Configuration directory")
     subparsers = parser.add_subparsers(help="subcommand help")
 
     version_parser = subparsers.add_parser("version", help="Show version information")
@@ -155,7 +139,7 @@ def _main(argv=None):
     list_parser.set_defaults(func=_do_list)
 
     args = parser.parse_args(argv)
-    args.func(args)
+    args.func(config, args)
 
 if __name__ == "__main__":
     _main()
