@@ -15,6 +15,8 @@ import sys
 from pyprelude.file_system import make_path
 from pysimplevcs.git_util import git_clone
 
+from sniptool import __description__, __project_name__, __version__
+
 def _set_clipboard_text(s):
     pyperclip.copy(s)
 
@@ -88,6 +90,9 @@ def _ensure_template_dir(config_dir):
     template_dir = make_path(template_repo_dir, "_snippets")
     return template_dir
 
+def _do_version(args):
+    print("{} version {}".format(__project_name__, __version__))
+
 def _do_gen(args):
     template_dir = _ensure_template_dir(args.config_dir)
 
@@ -129,13 +134,16 @@ def _main(argv=None):
 
     default_config_dir = make_path(os.path.expanduser("~/.sniptool"))
 
-    parser = argparse.ArgumentParser(prog="sniptool")
+    parser = argparse.ArgumentParser(prog=__project_name__, description=__description__)
     parser.add_argument(
         "--config-dir",
         "-c",
         default=default_config_dir,
         help="Configuration directory")
     subparsers = parser.add_subparsers(help="subcommand help")
+
+    version_parser = subparsers.add_parser("version", help="Show version information")
+    version_parser.set_defaults(func=_do_version)
 
     gen_parser = subparsers.add_parser("gen", help="Generate code snippet")
     gen_parser.set_defaults(func=_do_gen)
