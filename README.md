@@ -58,7 +58,7 @@ Note that this calls the `python` global Python instead of the Python in the pro
 
 Various package properties are defined in `sniptool/__init__py`:
 
-* `__project_name__` = "sniptool"
+* `__project_name__`
 * `__version__`
 * `__description__`
 

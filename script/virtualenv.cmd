@@ -6,8 +6,8 @@ goto :CMDSCRIPT
 set -euo pipefail
 IFS=$'\n\t'
 
-script_dir=$(cd $(dirname $0); pwd -P)
-root_dir=$(dirname $script_dir)
+this_dir=$(cd $(dirname $0); pwd -P)
+root_dir=$(dirname $this_dir)
 env_dir=$root_dir/env
 python_path=$env_dir/bin/python
 pip_path=$env_dir/bin/pip
@@ -18,7 +18,6 @@ fi
 
 cd $root_dir
 $pip_path install -r $root_dir/requirements.txt
-
 exit $?
 :CMDSCRIPT
 setlocal
@@ -28,7 +27,7 @@ exit /b 0
 
 :Main
 set x=%~f1
-set script_dir=%x:~0,-1%
+set this_dir=%x:~0,-1%
 set root_dir=%~f2
 set env_dir=%root_dir%\env
 set python_path=%env_dir%\Scripts\python.exe
