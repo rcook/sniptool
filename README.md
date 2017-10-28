@@ -64,6 +64,25 @@ Various package properties are defined in `sniptool/__init__py`:
 
 When publishing a new build of the package, ensure that `__version__` is incremented as appropriate.
 
+## User-level installation
+
+```
+pip install --user sniptool
+```
+
+This will perform a user-level installation of the package. The scripts will be placed at:
+
+* Windows: `%APPDATA%\Python\Scripts`
+* Linux/macOS: `$HOME/.local/bin`
+
+## Global installation
+
+```
+pip install sniptool
+```
+
+This will perform a global installation of the package and should add the script to `PATH`.
+
 ## Licence
 
 Released under [MIT License][licence]
