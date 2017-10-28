@@ -54,6 +54,16 @@ python setup.py install --record files.txt
 
 Note that this calls the `python` global Python instead of the Python in the project's virtual environment.
 
+## Notes
+
+Various package properties are defined in `sniptool/__init__py`:
+
+* `__project_name__` = "sniptool"
+* `__version__`
+* `__description__`
+
+When publishing a new build of the package, ensure that `__version__` is incremented as appropriate.
+
 ## Licence
 
 Released under [MIT License][licence]
