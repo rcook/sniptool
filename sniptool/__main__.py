@@ -82,9 +82,6 @@ def _show_metadata(path, metadata, defaults, indent=0):
         for key, value in defaults.iteritems():
             print("{}  {}={}".format(prefix, key, value))
 
-def _do_version(config, args):
-    print("{} version {}".format(__project_name__, __version__))
-
 def _do_gen(config, args):
     filters = jinja2.filters.FILTERS.copy()
     filters.update({
@@ -124,10 +121,9 @@ def _main(argv=None):
     config = Config(config_dir)
 
     parser = argparse.ArgumentParser(prog=__project_name__, description=__description__)
-    subparsers = parser.add_subparsers(help="subcommand help")
+    parser.add_argument("--version", action="version", version="{} version {}".format(__project_name__, __version__))
 
-    version_parser = subparsers.add_parser("version", help="Show version information")
-    version_parser.set_defaults(func=_do_version)
+    subparsers = parser.add_subparsers(help="subcommand help")
 
     gen_parser = subparsers.add_parser("gen", help="Generate code snippet")
     gen_parser.set_defaults(func=_do_gen)
