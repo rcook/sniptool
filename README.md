@@ -14,19 +14,19 @@ git clone https://github.com/rcook/sniptool.git
 script/virtualenv
 ```
 
-## Run main script in virtual environment
-
-```
-script/env sniptool version
-```
-
-## Dev-install main script in virtual environment
+## Dev-install main script into virtual environment
 
 ```
 script\env pip install -e .
 ```
 
 This will allow edits to the scripts to be picked up automatically
+
+## Run main script in virtual environment
+
+```
+script/env sniptool version
+```
 
 ## Build package
 
