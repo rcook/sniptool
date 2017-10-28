@@ -1,16 +1,3 @@
-/.eggs/
-/.Python
-/bin/
-/build/
-/dist/
-/Include/
-/include/
-/Lib/
-/lib/
-/local/
-/Scripts/
-/tcl/
-/lib64
-/pip-selfcheck.json
+/env/
 /sniptool.egg-info/
 *.pyc

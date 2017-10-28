@@ -8,7 +8,8 @@ IFS=$'\n\t'
 
 script_dir=$(cd $(dirname $0); pwd -P)
 root_dir=$(dirname $script_dir)
-python_path=$root_dir/bin/python
+env_dir=$root_dir/env
+python_path=$env_dir/bin/python
 
 if [ ! -e $python_path ]; then
     echo "Please create or update your virtual environment by running script/virtualenv"
@@ -28,7 +29,8 @@ exit /b 0
 set x=%~f1
 set script_dir=%x:~0,-1%
 set root_dir=%~f2
-set python_path=%root_dir%\Scripts\python.exe
+set env_dir=%root_dir%\env
+set python_path=%env_dir%\Scripts\python.exe
 
 if not exist "%python_path%" (
     echo Please create or update your virtual environment by running script\virtualenv

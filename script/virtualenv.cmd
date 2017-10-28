@@ -8,13 +8,15 @@ IFS=$'\n\t'
 
 script_dir=$(cd $(dirname $0); pwd -P)
 root_dir=$(dirname $script_dir)
-python_path=$root_dir/bin/python
-pip_path=$root_dir/bin/pip
+env_dir=$root_dir/env
+python_path=$env_dir/bin/python
+pip_path=$env_dir/bin/pip
 
 if [ ! -e $python_path ]; then
-    virtualenv $root_dir
+    virtualenv $env_dir
 fi
 
+cd $root_dir
 $pip_path install -q -r $root_dir/requirements.txt
 
 exit $?
@@ -28,13 +30,16 @@ exit /b 0
 set x=%~f1
 set script_dir=%x:~0,-1%
 set root_dir=%~f2
-set python_path=%root_dir%\Scripts\python.exe
-set pip_path=%root_dir%\Scripts\pip.exe
+set env_dir=%root_dir%\env
+set python_path=%env_dir%\Scripts\python.exe
+set pip_path=%env_dir%\Scripts\pip.exe
 
 if not exist "%python_path%" (
-    cd /d "%root_dir%"
+    mkdir "%env_dir%"
+    cd /d "%env_dir%"
     python -m virtualenv . || exit /b 1
 )
 
+cd /d "%root_dir%"
 "%pip_path%" install -q -r "%root_dir%\requirements.txt" || exit /b 1
 exit /b 0
