@@ -3,5 +3,5 @@
 ##################################################
 
 __project_name__ = "sniptool"
-__version__ = "0.3"
+__version__ = "0.4"
 __description__ = "Code snippet management tool"
