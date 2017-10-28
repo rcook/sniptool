@@ -20,6 +20,14 @@ script/virtualenv
 script/env sniptool version
 ```
 
+## Dev-install main script in virtual environment
+
+```
+script\env pip install -e .
+```
+
+This will allow edits to the scripts to be picked up automatically
+
 ## Build package
 
 ```
