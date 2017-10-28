@@ -8,37 +8,37 @@ Code snippet management tool
 git clone https://github.com/rcook/sniptool.git
 ```
 
-## Create Python virtual environment
+## Set up Python virtual environment
 
 ```
 script/virtualenv
 ```
 
-## Run main script
+## Run main script in virtual environment
 
 ```
-script/sniptool
+script/env sniptool version
 ```
 
 ## Build package
 
 ```
-script/setup build
+script/env python setup.py build
 ```
 
 ## Test package
 
 ```
-script/setup test
+script/env python setup.py test
 ```
 
 ## Upload package
 
 ```
-script/setup sdist upload
+script/env python setup.py sdist upload
 ```
 
-## Install package locally
+## Install package into global site packages
 
 ```
 python setup.py install --record files.txt

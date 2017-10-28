@@ -17,7 +17,7 @@ if [ ! -e $python_path ]; then
 fi
 
 cd $root_dir
-$pip_path install -q -r $root_dir/requirements.txt
+$pip_path install -r $root_dir/requirements.txt
 
 exit $?
 :CMDSCRIPT
@@ -41,5 +41,5 @@ if not exist "%python_path%" (
 )
 
 cd /d "%root_dir%"
-"%pip_path%" install -q -r "%root_dir%\requirements.txt" || exit /b 1
+"%pip_path%" install -r "%root_dir%\requirements.txt" || exit /b 1
 exit /b 0
