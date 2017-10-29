@@ -25,7 +25,7 @@ This will allow edits to the scripts to be picked up automatically
 ## Run main script in virtual environment
 
 ```
-script/env sniptool version
+script/env sniptool --version
 ```
 
 ## Build package
