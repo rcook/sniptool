@@ -13,6 +13,7 @@ import pyperclip
 import sys
 
 from pyprelude.file_system import make_path
+from pysimplevcs.git import Git
 
 from sniptool import __description__, __project_name__, __version__
 from sniptool.config import Config
@@ -82,6 +83,18 @@ def _show_metadata(path, metadata, defaults, indent=0):
         for key, value in defaults.iteritems():
             print("{}  {}={}".format(prefix, key, value))
 
+def _do_update(config, args):
+    print(config.template_dir)
+    git = Git(config.repo_dir)
+    original_commit = git.rev_parse("HEAD").strip()
+    git.pull("--rebase")
+    new_commit = git.rev_parse("HEAD").strip()
+
+    if original_commit == new_commit:
+        print("Repository already at latest revision {}".format(new_commit))
+    else:
+        print("Repository updated to latest revision {}".format(new_commit))
+
 def _do_gen(config, args):
     filters = jinja2.filters.FILTERS.copy()
     filters.update({
@@ -124,6 +137,9 @@ def _main(argv=None):
     parser.add_argument("--version", action="version", version="{} version {}".format(__project_name__, __version__))
 
     subparsers = parser.add_subparsers(help="subcommand help")
+
+    update_parser = subparsers.add_parser("update", help="Update local snippet repository")
+    update_parser.set_defaults(func=_do_update)
 
     gen_parser = subparsers.add_parser("gen", help="Generate code snippet")
     gen_parser.set_defaults(func=_do_gen)
