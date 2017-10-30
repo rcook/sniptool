@@ -1,5 +1,7 @@
 # sniptool by Richard Cook
 
+[![View on PyPI](https://img.shields.io/pypi/v/sniptool.svg)](https://pypi.python.org/pypi/sniptool)
+
 Code snippet management tool
 
 ## Clone repository
