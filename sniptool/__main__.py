@@ -18,6 +18,12 @@ from pysimplevcs.git import Git
 from sniptool import __description__, __project_name__, __version__
 from sniptool.config import Config
 
+def _public_callable_attrs(cls):
+    for f in dir(cls):
+        attr = getattr(cls, f)
+        if not f.startswith("_") and callable(attr):
+            yield attr
+
 def _set_clipboard_text(s):
     pyperclip.copy(s)
 
@@ -96,13 +102,13 @@ def _do_update(config, args):
         print("Repository updated to latest revision {}".format(new_commit))
 
 def _do_gen(config, args):
-    filters = jinja2.filters.FILTERS.copy()
-    filters.update({
-        "encode_cpp_literal" : lambda s: "\"" + s.replace("\\", "\\\\") + "\"", # TODO: Implement full set of C++ literal encoding rules
-        "pluralize": inflection.pluralize
-    })
     env = jinja2.Environment(undefined=jinja2.StrictUndefined)
-    env.filters = filters
+
+    env.filters["encode_cpp_literal"] = lambda s: "\"" + s.replace("\\", "\\\\") + "\"" # TODO: Implement full set of C++ literal encoding rules
+
+    for f in _public_callable_attrs(inflection):
+        env.filters[f.__name__] = f
+
     path = make_path(config.template_dir, args.template_name)
     source = _read_source(path)
     metadata, defaults = _read_metadata(source)
