@@ -116,12 +116,19 @@ def _do_gen(config, args):
     print("Template: {}".format(args.template_name))
     _show_metadata(path, metadata, defaults, 1)
     values = _prompt(env, source, defaults)
+
     output = env.from_string(source, values).render()
     print("==========")
     print(output)
     print("==========")
-    _set_clipboard_text(output)
-    print("Text sent to clipboard")
+
+    if args.output_path is None:
+        _set_clipboard_text(output)
+        print("Text sent to clipboard")
+    else:
+        with open(args.output_path, "wt") as f:
+            f.write(output)
+        print("Text written to file {}".format(args.output_path))
 
 def _do_list(config, args):
     for p in os.listdir(config.template_dir):
@@ -152,6 +159,13 @@ def _main(argv=None):
     gen_parser.add_argument(
         "template_name",
         help="Template name")
+    gen_parser.add_argument(
+        "--output-file",
+        "-f",
+        dest="output_path",
+        default=None,
+        type=make_path,
+        help="Write to specified file instead of clipboard")
 
     list_parser = subparsers.add_parser("list", help="List available templates")
     list_parser.set_defaults(func=_do_list)
